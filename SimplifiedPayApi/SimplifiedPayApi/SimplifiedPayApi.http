@@ -1,0 +1,6 @@
+@SimplifiedPayApi_HostAddress = http://localhost:5069
+
+GET {{SimplifiedPayApi_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
