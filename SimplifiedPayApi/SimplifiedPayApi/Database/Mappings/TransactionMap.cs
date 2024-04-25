@@ -25,7 +25,7 @@ public class TransactionMap : IEntityTypeConfiguration<Transaction>
 
         builder.Property(t => t.Timestamp)
                .HasColumnType("DATETIME")
-               .HasDefaultValue(DateTime.Now.ToUniversalTime());
+               .HasDefaultValueSql("GETDATE()");
 
         builder.HasOne(t => t.Payer)
                .WithMany()

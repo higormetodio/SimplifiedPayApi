@@ -21,9 +21,9 @@ public class UserMap : IEntityTypeConfiguration<User>
                .HasMaxLength(100)
                .IsRequired();
 
-        builder.HasAlternateKey(u => u.IdentificationNumebr)
+        builder.HasAlternateKey(u => u.IdentificationNumber)
                .HasName("UQ_USERS_IDENTIFICATION_NUMBER");
-        builder.Property(u => u.IdentificationNumebr)
+        builder.Property(u => u.IdentificationNumber)
                .HasColumnType("NVARCHAR")
                .HasMaxLength(20)
                .IsRequired();
@@ -37,6 +37,7 @@ public class UserMap : IEntityTypeConfiguration<User>
 
         builder.Property(u => u.Password)
                 .HasColumnType("NVARCHAR")
+                .HasMaxLength(255)
                 .IsRequired();
 
         builder.Property(u => u.UserType)
@@ -44,7 +45,7 @@ public class UserMap : IEntityTypeConfiguration<User>
                 .HasMaxLength(100)
                 .IsRequired();
 
-        builder.HasIndex(u => u.IdentificationNumebr)
+        builder.HasIndex(u => u.IdentificationNumber)
                .HasDatabaseName("IX_USERS_IDENTIFICATION_NUMBER")
                .IsUnique();
 

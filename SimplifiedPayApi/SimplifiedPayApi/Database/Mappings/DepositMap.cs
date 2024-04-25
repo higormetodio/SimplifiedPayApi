@@ -21,14 +21,12 @@ public class DepositMap : IEntityTypeConfiguration<Deposit>
 
         builder.Property(d => d.Timestamp)
                .HasColumnType("DATETIME")
-               .HasDefaultValue(DateTime.Now.ToUniversalTime());
+               .HasDefaultValueSql("GETDATE()");
 
         builder.HasOne(d => d.User)
                .WithMany(u => u.Deposits)
                .HasConstraintName("FK_DEPOSITS_USERS")
                .HasForeignKey(d => d.UserId)
                .OnDelete(DeleteBehavior.ClientNoAction);
-               
-        
     }
 }
