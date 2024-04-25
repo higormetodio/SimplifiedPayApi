@@ -26,7 +26,8 @@ public class DepositMap : IEntityTypeConfiguration<Deposit>
         builder.HasOne(d => d.User)
                .WithMany(u => u.Deposits)
                .HasConstraintName("FK_DEPOSITS_USERS")
-               .HasForeignKey(d => d.UserId);
+               .HasForeignKey(d => d.UserId)
+               .OnDelete(DeleteBehavior.ClientNoAction);
                
         
     }
