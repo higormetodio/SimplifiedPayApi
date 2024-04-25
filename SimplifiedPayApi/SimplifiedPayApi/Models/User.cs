@@ -11,5 +11,5 @@ public class User
     public string? Password { get; set; }
     public UserType UserType { get; set; }
     public ICollection<Transaction>? Transactions { get; set; }
-    public ICollection<Account>? Account { get; set; }
+    public ICollection<Deposit>? Deposits { get; set; }
 }

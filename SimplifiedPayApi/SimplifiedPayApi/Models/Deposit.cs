@@ -1,6 +1,6 @@
 ﻿namespace SimplifiedPayApi.Models;
 
-public class Account
+public class Deposit
 {
     public int Id { get; set; }
     public decimal Amount { get; set; }
