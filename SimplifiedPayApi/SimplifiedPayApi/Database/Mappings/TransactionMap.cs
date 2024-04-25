@@ -28,12 +28,12 @@ public class TransactionMap : IEntityTypeConfiguration<Transaction>
                .HasDefaultValue(DateTime.Now.ToUniversalTime());
 
         builder.HasOne(t => t.Payer)
-               .WithMany(u => u.Transactions)
+               .WithMany()
                .HasConstraintName("FK_TRANSACTION_PAYER")
                .HasForeignKey(t => t.PayerId);
                
         builder.HasOne(t => t.Receiver)
-               .WithMany(u => u.Transactions)
+               .WithMany()
                .HasConstraintName("FK_TRANSACTION_RECEIVER")
                .HasForeignKey(t => t.ReceiverId);
     }
