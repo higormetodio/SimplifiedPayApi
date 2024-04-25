@@ -21,13 +21,15 @@ public class UserMap : IEntityTypeConfiguration<User>
                .HasMaxLength(100)
                .IsRequired();
 
-        builder.HasAlternateKey(u => u.IdentificationNumebr);
+        builder.HasAlternateKey(u => u.IdentificationNumebr)
+               .HasName("UQ_USERS_IDENTIFICATION_NUMBER");
         builder.Property(u => u.IdentificationNumebr)
                .HasColumnType("NVARCHAR")
                .HasMaxLength(20)
                .IsRequired();
 
-        builder.HasAlternateKey(u => u.Email);
+        builder.HasAlternateKey(u => u.Email)
+               .HasName("UQ_USERS_EMAIL");
         builder.Property(u => u.Email)
                 .HasColumnType("NVARCHAR")
                 .HasMaxLength(50)
@@ -43,11 +45,11 @@ public class UserMap : IEntityTypeConfiguration<User>
                 .IsRequired();
 
         builder.HasIndex(u => u.IdentificationNumebr)
-               .HasDatabaseName("IX_User_IdentificationNumber")
+               .HasDatabaseName("IX_USERS_IDENTIFICATION_NUMBER")
                .IsUnique();
 
         builder.HasIndex(u => u.Email)
-               .HasDatabaseName("IX_User_Email")
+               .HasDatabaseName("IX_USERS_EMAIL")
                .IsUnique();
     }
 }

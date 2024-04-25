@@ -8,7 +8,7 @@ public class DepositMap : IEntityTypeConfiguration<Deposit>
 {
     public void Configure(EntityTypeBuilder<Deposit> builder)
     {
-        builder.ToTable("ACCOUNTS");
+        builder.ToTable("DEPOSITS");
 
         builder.HasKey(d => d.Id);
         builder.Property(d => d.Id)
@@ -25,7 +25,7 @@ public class DepositMap : IEntityTypeConfiguration<Deposit>
 
         builder.HasOne(d => d.User)
                .WithMany(u => u.Deposits)
-               .HasConstraintName("FK_DEPOSIT_USER")
+               .HasConstraintName("FK_DEPOSITS_USERS")
                .HasForeignKey(d => d.UserId);
                
         

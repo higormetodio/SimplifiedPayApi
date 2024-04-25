@@ -29,12 +29,12 @@ public class TransactionMap : IEntityTypeConfiguration<Transaction>
 
         builder.HasOne(t => t.Payer)
                .WithMany()
-               .HasConstraintName("FK_TRANSACTION_PAYER")
+               .HasConstraintName("FK_TRANSACTIONS_USERS_PAYER")
                .HasForeignKey(t => t.PayerId);
                
         builder.HasOne(t => t.Receiver)
                .WithMany()
-               .HasConstraintName("FK_TRANSACTION_RECEIVER")
+               .HasConstraintName("FK_TRANSACTIONS_USERS_RECEIVER")
                .HasForeignKey(t => t.ReceiverId);
     }
 }
