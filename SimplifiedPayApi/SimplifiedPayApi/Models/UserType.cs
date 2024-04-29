@@ -2,7 +2,7 @@
 {
     public enum UserType
     {
-        CommonUser,
-        Shopkeeper
+        CommonUser = 1,
+        Shopkeeper = 2
     }
 }
