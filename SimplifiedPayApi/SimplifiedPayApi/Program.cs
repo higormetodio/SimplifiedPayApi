@@ -1,8 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using SimplifiedPayApi.Context;
-using SimplifiedPayApi.Controllers;
+using SimplifiedPayApi.Extensions;
 using SimplifiedPayApi.Repositories;
-using System.Text.Json;
 using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -30,6 +29,7 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+    app.ConfigureExceptionHandler();
 }
 
 app.UseHttpsRedirection();
