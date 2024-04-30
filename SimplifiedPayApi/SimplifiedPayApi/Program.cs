@@ -1,10 +1,16 @@
 using Microsoft.EntityFrameworkCore;
 using SimplifiedPayApi.Context;
 using SimplifiedPayApi.Extensions;
+using SimplifiedPayApi.Logging;
 using SimplifiedPayApi.Repositories;
 using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Logging.AddProvider(new CustomLoggerProvider(new CustomLoggerProviderConfiguration
+{
+    LogLevel = LogLevel.Information
+}));
 
 // Add services to the container.
 
