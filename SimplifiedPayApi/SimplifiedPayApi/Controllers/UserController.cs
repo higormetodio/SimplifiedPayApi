@@ -4,8 +4,9 @@ using SimplifiedPayApi.Repositories;
 
 namespace SimplifiedPayApi.Controllers;
 
-[Route("[controller]")]
+[Route("api/[controller]")]
 [ApiController]
+[ApiExplorerSettings()]
 public class UserController : Controller
 {
     private readonly IRepository<User> _repository;
@@ -35,7 +36,7 @@ public class UserController : Controller
             return NotFound("User not found...");
         }
 
-        return Ok(User);
+        return Ok(user);
     }
 
     [HttpPost]
