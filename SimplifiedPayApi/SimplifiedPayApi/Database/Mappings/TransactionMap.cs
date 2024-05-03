@@ -28,7 +28,7 @@ public class TransactionMap : IEntityTypeConfiguration<Transaction>
                .HasDefaultValueSql("GETDATE()");
 
         builder.HasOne(t => t.Payer)
-               .WithMany()
+               .WithMany(u => u.Transactions)
                .HasConstraintName("FK_TRANSACTIONS_USERS_PAYER")
                .HasForeignKey(t => t.PayerId)
                .OnDelete(DeleteBehavior.ClientNoAction);

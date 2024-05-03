@@ -12,7 +12,7 @@ using SimplifiedPayApi.Context;
 namespace SimplifiedPayApi.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240425203637_InitialDatabase")]
+    [Migration("20240503181738_InitialDatabase")]
     partial class InitialDatabase
     {
         /// <inheritdoc />
@@ -76,16 +76,11 @@ namespace SimplifiedPayApi.Migrations
                         .HasColumnType("DATETIME")
                         .HasDefaultValueSql("GETDATE()");
 
-                    b.Property<int?>("UserId")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
 
                     b.HasIndex("PayerId");
 
                     b.HasIndex("ReceiverId");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("TRANSACTIONS", (string)null);
                 });
@@ -157,7 +152,7 @@ namespace SimplifiedPayApi.Migrations
             modelBuilder.Entity("SimplifiedPayApi.Models.Transaction", b =>
                 {
                     b.HasOne("SimplifiedPayApi.Models.User", "Payer")
-                        .WithMany()
+                        .WithMany("Transactions")
                         .HasForeignKey("PayerId")
                         .OnDelete(DeleteBehavior.ClientNoAction)
                         .IsRequired()
@@ -169,10 +164,6 @@ namespace SimplifiedPayApi.Migrations
                         .OnDelete(DeleteBehavior.ClientNoAction)
                         .IsRequired()
                         .HasConstraintName("FK_TRANSACTIONS_USERS_RECEIVER");
-
-                    b.HasOne("SimplifiedPayApi.Models.User", null)
-                        .WithMany("Transactions")
-                        .HasForeignKey("UserId");
 
                     b.Navigation("Payer");
 

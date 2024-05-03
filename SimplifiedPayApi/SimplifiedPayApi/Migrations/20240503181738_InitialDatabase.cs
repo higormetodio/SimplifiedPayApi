@@ -78,6 +78,21 @@ namespace SimplifiedPayApi.Migrations
                 });
 
             migrationBuilder.CreateIndex(
+                name: "IX_DEPOSITS_UserId",
+                table: "DEPOSITS",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_TRANSACTIONS_PayerId",
+                table: "TRANSACTIONS",
+                column: "PayerId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_TRANSACTIONS_ReceiverId",
+                table: "TRANSACTIONS",
+                column: "ReceiverId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_USERS_EMAIL",
                 table: "USERS",
                 column: "Email",
