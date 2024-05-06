@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using SimplifiedPayApi.Models;
 using SimplifiedPayApi.Repositories;
 
@@ -10,12 +11,10 @@ namespace SimplifiedPayApi.Controllers;
 public class UserController : Controller
 {
     private readonly IRepository<User> _repository;
-    private readonly IConfiguration _configuration;
 
-    public UserController(IRepository<User> repository, IConfiguration configuration)
+    public UserController(IRepository<User> repository)
     {
         _repository = repository;
-        _configuration = configuration;
     }
 
     [HttpGet]
@@ -40,25 +39,43 @@ public class UserController : Controller
     }
 
     [HttpPost]
-    public ActionResult Post(User user)
+    public ActionResult Post(User newUser)
     {
-        if (user is null)
+        if (newUser is null)
+        {
             return BadRequest();
+        }
 
-        _repository.Create(user);
+        var user = _repository.Get(u => u.IdentificationNumber == newUser.IdentificationNumber ||
+                                        u.Email == newUser.Email);
 
-        return new CreatedAtRouteResult("BuscarUsuario", new { id = user.Id }, user);
+        if (user != null)
+        {
+            throw new DbUpdateException(message: "The Identication Number or Email already registered");
+        }
+
+        _repository.Create(newUser);
+
+        return new CreatedAtRouteResult("BuscarUsuario", new { id = newUser.Id }, newUser);
     }
 
     [HttpPut("{id:int}")]
-    public ActionResult Put(int id, User user)
+    public ActionResult Put(int id, User newUser)
     {
-        if (id != user.Id)
+        if (id != newUser.Id)
             return BadRequest();
 
-        _repository.Update(user);
+        var user = _repository.Get(u => u.IdentificationNumber == newUser.IdentificationNumber ||
+                                        u.Email == newUser.Email);
 
-        return Ok(user);
+        if (user != null)
+        {
+            throw new DbUpdateException(message: "The Identication Number or Email already registered");
+        }
+
+        _repository.Update(newUser);
+
+        return Ok(newUser);
     }
 
     [HttpDelete("{id:int}")]

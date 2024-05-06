@@ -9,10 +9,25 @@ namespace SimplifiedPayApi.Controllers;
 public class DepositController : Controller
 {
     private readonly IRepository<Deposit> _repository;
+    private readonly IDepositRepository _depositRepository;
 
-    public DepositController(IRepository<Deposit> repository)
+    public DepositController(IRepository<Deposit> repository, IDepositRepository depositRepository)
     {
         _repository = repository;
+        _depositRepository = depositRepository;
+    }
+
+    [HttpGet("user/{id:int}")]
+    public ActionResult<Deposit> GetDepositByUser(int id)
+    {
+        var deposit = _depositRepository.GetDepositByUser(id);
+
+        if (deposit is null)
+        {
+            return NotFound("User not found");
+        }
+
+        return Ok(deposit);
     }
 
     [HttpPost]

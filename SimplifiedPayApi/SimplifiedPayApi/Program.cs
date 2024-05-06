@@ -14,7 +14,12 @@ builder.Logging.AddProvider(new CustomLoggerProvider(new CustomLoggerProviderCon
 
 // Add services to the container.
 
-builder.Services.AddControllers().AddJsonOptions(options =>
+builder.Services.AddControllers(//options =>
+//{
+//    options.Filters.Add(typeof(ApiExceptionFilter));
+//})
+)
+.AddJsonOptions(options =>
 {
     options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
 });
@@ -26,7 +31,8 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(Environment.GetEnvironmentVariable("DB_CONNECTION_STRING")));
 
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
-builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<ITransactionRepository, TransactionRepository>();
+builder.Services.AddScoped<IDepositRepository, DepositRepository>();
 
 var app = builder.Build();
 
