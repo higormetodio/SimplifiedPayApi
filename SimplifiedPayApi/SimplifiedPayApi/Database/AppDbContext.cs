@@ -11,14 +11,12 @@ public sealed class AppDbContext : DbContext
 
     }
 
-    public DbSet<User> Users { get; set; }
-    public DbSet<Deposit> Deposits { get; set; }
+    public DbSet<Wallet> Users { get; set; }
     public DbSet<Transaction> Transactions { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.ApplyConfiguration(new UserMap());
+        modelBuilder.ApplyConfiguration(new WalletMap());
         modelBuilder.ApplyConfiguration(new TransactionMap());
-        modelBuilder.ApplyConfiguration(new DepositMap());
     }
 }

@@ -8,17 +8,17 @@ namespace SimplifiedPayApi.Controllers;
 [Route("api/[controller]")]
 [ApiController]
 [ApiExplorerSettings()]
-public class UserController : Controller
+public class WalletController : Controller
 {
-    private readonly IRepository<User> _repository;
+    private readonly IRepository<Wallet> _repository;
 
-    public UserController(IRepository<User> repository)
+    public WalletController(IRepository<Wallet> repository)
     {
         _repository = repository;
     }
 
     [HttpGet]
-    public ActionResult<IEnumerable<User>> Get()
+    public ActionResult<IEnumerable<Wallet>> Get()
     {
         var users = _repository.GetAll();
 
@@ -26,7 +26,7 @@ public class UserController : Controller
     }
 
     [HttpGet("{id:int}", Name = "BuscarUsuario")]
-    public ActionResult<User> Get(int id)
+    public ActionResult<Wallet> Get(int id)
     {
         var user = _repository.Get(u => u.Id == id);
 
@@ -39,7 +39,7 @@ public class UserController : Controller
     }
 
     [HttpPost]
-    public ActionResult Post(User newUser)
+    public ActionResult Post(Wallet newUser)
     {
         if (newUser is null)
         {
@@ -60,7 +60,7 @@ public class UserController : Controller
     }
 
     [HttpPut("{id:int}")]
-    public ActionResult Put(int id, User newUser)
+    public ActionResult Put(int id, Wallet newUser)
     {
         if (id != newUser.Id)
             return BadRequest();

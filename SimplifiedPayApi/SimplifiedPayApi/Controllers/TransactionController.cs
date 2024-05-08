@@ -9,26 +9,24 @@ namespace SimplifiedPayApi.Controllers;
 [ApiController]
 public class TransactionController : Controller
 {
-    private readonly IRepository<Transaction> _repositoryTransaction;
-    private readonly IRepository<Deposit> _repositoryDeposit;
-    private readonly IRepository<User> _repositoryUser;
-    private readonly ITransactionRepository _transactionRepository;
+    private readonly IRepository<Transaction> _repository;
+    private readonly IRepository<Wallet> _repositoryWallet;
+    private readonly ITransactionRepository _repositoryTransaction;
     private readonly TransactionService _transactionService;
 
-    public TransactionController(IRepository<Transaction> repositoryTransaction, ITransactionRepository transactionRepository,
-                                 TransactionService transactionService, IRepository<Deposit> repositoryDeposit, IRepository<User> repositoryUser)
+    public TransactionController(IRepository<Transaction> repository, IRepository<Wallet> repositoryWallet, 
+                                 ITransactionRepository repositoryTransaction, TransactionService transactionService)
     {
+        _repository = repository;
+        _repositoryWallet = repositoryWallet;
         _repositoryTransaction = repositoryTransaction;
-        _transactionRepository = transactionRepository;
         _transactionService = transactionService;
-        _repositoryDeposit = repositoryDeposit;
-        _repositoryUser = repositoryUser;
     }
 
     [HttpGet("user/{id:int}")]
     public ActionResult<Transaction> GetTransactionByPayer(int id)
     {
-        var transction = _transactionRepository.GetTransactionByUser(id);
+        var transction = _repositoryTransaction.GetTransactionByUser(id);
 
         if (transction is null)
         {
@@ -47,27 +45,26 @@ public class TransactionController : Controller
         if (transaction.PayerId == transaction.ReceiverId)
             return BadRequest("The Payer and Receiver can't the same.");
 
-        var user = _repositoryUser.Get(u => u.Id == transaction.PayerId);
+        var payer = _repositoryWallet.Get(w => w.Id == transaction.PayerId)!;
 
-        if (user.UserType == UserType.Shopkeeper)
+        if (payer.UserType == UserType.Shopkeeper)
         {
             return BadRequest("The Payer is a Shopkeeper. Unauthorized transaction");
         }
         
-        var payer = _repositoryDeposit.Get(d => d.UserId == transaction.PayerId)!;
-        var receiver = _repositoryDeposit.Get(d => d.UserId == transaction.ReceiverId)!;
+        var receiver = _repositoryWallet.Get(w => w.Id == transaction.ReceiverId)!;
 
-        _repositoryDeposit.Update(DepositService.Debit(payer, transaction.Amount));
-        _repositoryDeposit.Update(DepositService.Credit(receiver, transaction.Amount));
+        _repositoryWallet.Update(WalletService.Debit(payer, transaction.Amount));
+        _repositoryWallet.Update(WalletService.Credit(receiver, transaction.Amount));
 
-        _repositoryTransaction.Create(transaction);
+        _repository.Create(transaction);
 
         string message = await _transactionService.TransactionValidation();
 
         if (message != "Autorizado")
         {
-            _repositoryDeposit.RollBack();
-            _repositoryTransaction.RollBack();
+            _repositoryWallet.RollBack();
+            _repository.RollBack();
 
             return BadRequest("Unauthorized transaction");
         }

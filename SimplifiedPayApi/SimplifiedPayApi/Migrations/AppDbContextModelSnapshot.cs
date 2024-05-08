@@ -22,32 +22,6 @@ namespace SimplifiedPayApi.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("SimplifiedPayApi.Models.Deposit", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<decimal>("Amount")
-                        .HasColumnType("MONEY");
-
-                    b.Property<DateTime>("Timestamp")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("DATETIME")
-                        .HasDefaultValueSql("GETDATE()");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("DEPOSITS", (string)null);
-                });
-
             modelBuilder.Entity("SimplifiedPayApi.Models.Transaction", b =>
                 {
                     b.Property<int>("Id")
@@ -82,13 +56,16 @@ namespace SimplifiedPayApi.Migrations
                     b.ToTable("TRANSACTIONS", (string)null);
                 });
 
-            modelBuilder.Entity("SimplifiedPayApi.Models.User", b =>
+            modelBuilder.Entity("SimplifiedPayApi.Models.Wallet", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<decimal>("Balance")
+                        .HasColumnType("MONEY");
 
                     b.Property<string>("Email")
                         .IsRequired()
@@ -118,59 +95,45 @@ namespace SimplifiedPayApi.Migrations
                     b.HasKey("Id");
 
                     b.HasAlternateKey("Email")
-                        .HasName("UQ_USERS_EMAIL");
+                        .HasName("UQ_WALLETS_EMAIL");
 
                     b.HasAlternateKey("IdentificationNumber")
-                        .HasName("UQ_USERS_IDENTIFICATION_NUMBER");
+                        .HasName("UQ_WALLETS_IDENTIFICATION_NUMBER");
 
                     b.HasIndex("Email")
                         .IsUnique()
-                        .HasDatabaseName("IX_USERS_EMAIL");
+                        .HasDatabaseName("IX_WALLETS_EMAIL");
 
                     b.HasIndex("IdentificationNumber")
                         .IsUnique()
-                        .HasDatabaseName("IX_USERS_IDENTIFICATION_NUMBER");
+                        .HasDatabaseName("IX_WALLETS_IDENTIFICATION_NUMBER");
 
-                    b.ToTable("USERS", (string)null);
-                });
-
-            modelBuilder.Entity("SimplifiedPayApi.Models.Deposit", b =>
-                {
-                    b.HasOne("SimplifiedPayApi.Models.User", "User")
-                        .WithMany("Deposits")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.ClientNoAction)
-                        .IsRequired()
-                        .HasConstraintName("FK_DEPOSITS_USERS");
-
-                    b.Navigation("User");
+                    b.ToTable("WALLETS", (string)null);
                 });
 
             modelBuilder.Entity("SimplifiedPayApi.Models.Transaction", b =>
                 {
-                    b.HasOne("SimplifiedPayApi.Models.User", "Payer")
+                    b.HasOne("SimplifiedPayApi.Models.Wallet", "Payer")
                         .WithMany("Transactions")
                         .HasForeignKey("PayerId")
                         .OnDelete(DeleteBehavior.ClientNoAction)
                         .IsRequired()
-                        .HasConstraintName("FK_TRANSACTIONS_USERS_PAYER");
+                        .HasConstraintName("FK_TRANSACTIONS_WALLETS_PAYER");
 
-                    b.HasOne("SimplifiedPayApi.Models.User", "Receiver")
+                    b.HasOne("SimplifiedPayApi.Models.Wallet", "Receiver")
                         .WithMany()
                         .HasForeignKey("ReceiverId")
                         .OnDelete(DeleteBehavior.ClientNoAction)
                         .IsRequired()
-                        .HasConstraintName("FK_TRANSACTIONS_USERS_RECEIVER");
+                        .HasConstraintName("FK_TRANSACTIONS_WALLETS_RECEIVER");
 
                     b.Navigation("Payer");
 
                     b.Navigation("Receiver");
                 });
 
-            modelBuilder.Entity("SimplifiedPayApi.Models.User", b =>
+            modelBuilder.Entity("SimplifiedPayApi.Models.Wallet", b =>
                 {
-                    b.Navigation("Deposits");
-
                     b.Navigation("Transactions");
                 });
 #pragma warning restore 612, 618

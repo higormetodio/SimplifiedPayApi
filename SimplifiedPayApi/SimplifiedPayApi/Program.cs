@@ -31,7 +31,6 @@ builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(Envi
 
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 builder.Services.AddScoped<ITransactionRepository, TransactionRepository>();
-builder.Services.AddScoped<IDepositRepository, DepositRepository>();
 
 var app = builder.Build();
 

@@ -30,13 +30,13 @@ public class TransactionMap : IEntityTypeConfiguration<Transaction>
 
         builder.HasOne(t => t.Payer)
                .WithMany(u => u.Transactions)
-               .HasConstraintName("FK_TRANSACTIONS_USERS_PAYER")
+               .HasConstraintName("FK_TRANSACTIONS_WALLETS_PAYER")
                .HasForeignKey(t => t.PayerId)
                .OnDelete(DeleteBehavior.ClientNoAction);
                
         builder.HasOne(t => t.Receiver)
                .WithMany()
-               .HasConstraintName("FK_TRANSACTIONS_USERS_RECEIVER")
+               .HasConstraintName("FK_TRANSACTIONS_WALLETS_RECEIVER")
                .HasForeignKey(t => t.ReceiverId)
                .OnDelete(DeleteBehavior.ClientNoAction);
     }

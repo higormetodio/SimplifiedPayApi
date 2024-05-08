@@ -12,7 +12,7 @@ namespace SimplifiedPayApi.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "USERS",
+                name: "WALLETS",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -21,33 +21,14 @@ namespace SimplifiedPayApi.Migrations
                     IdentificationNumber = table.Column<string>(type: "NVARCHAR(20)", maxLength: 20, nullable: false),
                     Email = table.Column<string>(type: "NVARCHAR(50)", maxLength: 50, nullable: false),
                     Password = table.Column<string>(type: "NVARCHAR(255)", maxLength: 255, nullable: false),
+                    Balance = table.Column<decimal>(type: "MONEY", nullable: false),
                     UserType = table.Column<string>(type: "NVARCHAR(100)", maxLength: 100, nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_USERS", x => x.Id);
-                    table.UniqueConstraint("UQ_USERS_EMAIL", x => x.Email);
-                    table.UniqueConstraint("UQ_USERS_IDENTIFICATION_NUMBER", x => x.IdentificationNumber);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "DEPOSITS",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Amount = table.Column<decimal>(type: "MONEY", nullable: false),
-                    UserId = table.Column<int>(type: "int", nullable: false),
-                    Timestamp = table.Column<DateTime>(type: "DATETIME", nullable: false, defaultValueSql: "GETDATE()")
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_DEPOSITS", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_DEPOSITS_USERS",
-                        column: x => x.UserId,
-                        principalTable: "USERS",
-                        principalColumn: "Id");
+                    table.PrimaryKey("PK_WALLETS", x => x.Id);
+                    table.UniqueConstraint("UQ_WALLETS_EMAIL", x => x.Email);
+                    table.UniqueConstraint("UQ_WALLETS_IDENTIFICATION_NUMBER", x => x.IdentificationNumber);
                 });
 
             migrationBuilder.CreateTable(
@@ -66,21 +47,16 @@ namespace SimplifiedPayApi.Migrations
                 {
                     table.PrimaryKey("PK_TRANSACTIONS", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_TRANSACTIONS_USERS_PAYER",
+                        name: "FK_TRANSACTIONS_WALLETS_PAYER",
                         column: x => x.PayerId,
-                        principalTable: "USERS",
+                        principalTable: "WALLETS",
                         principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_TRANSACTIONS_USERS_RECEIVER",
+                        name: "FK_TRANSACTIONS_WALLETS_RECEIVER",
                         column: x => x.ReceiverId,
-                        principalTable: "USERS",
+                        principalTable: "WALLETS",
                         principalColumn: "Id");
                 });
-
-            migrationBuilder.CreateIndex(
-                name: "IX_DEPOSITS_UserId",
-                table: "DEPOSITS",
-                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_TRANSACTIONS_PayerId",
@@ -93,14 +69,14 @@ namespace SimplifiedPayApi.Migrations
                 column: "ReceiverId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_USERS_EMAIL",
-                table: "USERS",
+                name: "IX_WALLETS_EMAIL",
+                table: "WALLETS",
                 column: "Email",
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_USERS_IDENTIFICATION_NUMBER",
-                table: "USERS",
+                name: "IX_WALLETS_IDENTIFICATION_NUMBER",
+                table: "WALLETS",
                 column: "IdentificationNumber",
                 unique: true);
         }
@@ -109,13 +85,10 @@ namespace SimplifiedPayApi.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "DEPOSITS");
-
-            migrationBuilder.DropTable(
                 name: "TRANSACTIONS");
 
             migrationBuilder.DropTable(
-                name: "USERS");
+                name: "WALLETS");
         }
     }
 }
