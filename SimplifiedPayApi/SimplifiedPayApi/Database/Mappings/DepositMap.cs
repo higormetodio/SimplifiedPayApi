@@ -15,6 +15,10 @@ namespace SimplifiedPayApi.Database.Mappings
                    .ValueGeneratedOnAdd()
                    .UseIdentityColumn();
 
+            builder.Property(d => d.Amount)
+                   .HasColumnType("MONEY")
+                   .IsRequired();
+
             builder.HasOne(d => d.Depositor)
                    .WithMany(u => u.Deposits)
                    .HasConstraintName("FK_DEPOSIT_WALLET_DEPOSITOR")

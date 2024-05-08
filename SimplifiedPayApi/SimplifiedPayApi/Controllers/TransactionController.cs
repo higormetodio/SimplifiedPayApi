@@ -23,10 +23,10 @@ public class TransactionController : Controller
         _transactionService = transactionService;
     }
 
-    [HttpGet("user/{id:int}")]
+    [HttpGet("wallet/{id:int}")]
     public ActionResult<Transaction> GetTransactionByPayer(int id)
     {
-        var transction = _repositoryTransaction.GetTransactionByUser(id);
+        var transction = _repositoryTransaction.GetTransactionByWallet(id);
 
         if (transction is null)
         {
@@ -45,7 +45,10 @@ public class TransactionController : Controller
         if (transaction.PayerId == transaction.ReceiverId)
             return BadRequest("The Payer and Receiver can't the same.");
 
-        var payer = _repositoryWallet.Get(w => w.Id == transaction.PayerId)!;
+        var payer = _repositoryWallet.Get(w => w.Id == transaction.PayerId);
+
+        if (payer is null)
+            return BadRequest("User not found...");
 
         if (payer.UserType == UserType.Shopkeeper)
         {

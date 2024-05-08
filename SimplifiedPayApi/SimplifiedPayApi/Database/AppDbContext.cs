@@ -13,6 +13,7 @@ public sealed class AppDbContext : DbContext
 
     public DbSet<Wallet> Users { get; set; }
     public DbSet<Transaction> Transactions { get; set; }
+    public DbSet<Deposit> Deposits { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

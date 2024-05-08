@@ -11,7 +11,7 @@ public class TransactionRepository : Repository<Transaction>, ITransactionReposi
         
     }
 
-    public Transaction? GetTransactionByUser(int id)
+    public Transaction? GetTransactionByWallet(int id)
         => _context.Transactions.Include(t => t.Payer)
                                 .FirstOrDefault(t => t.PayerId == id);
 }
