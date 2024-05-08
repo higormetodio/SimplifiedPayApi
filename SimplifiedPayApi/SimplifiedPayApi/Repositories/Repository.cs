@@ -45,4 +45,9 @@ public class Repository<T> : IRepository<T> where T : class
 
         return entity;
     }
+
+    public void RollBack()
+    {
+        _context.Database.RollbackTransaction();
+    }
 }

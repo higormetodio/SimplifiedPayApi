@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SimplifiedPayApi.Models;
 using SimplifiedPayApi.Repositories;
+using System.Net;
 
 namespace SimplifiedPayApi.Controllers;
 
@@ -18,23 +19,32 @@ public class DepositController : Controller
     }
 
     [HttpGet("user/{id:int}")]
-    public ActionResult<Deposit> GetDepositByUser(int id)
+    public ActionResult<ICollection<Deposit>> GetDepositByUser(int id)
     {
-        var deposit = _depositRepository.GetDepositByUser(id);
+        var deposits = _depositRepository.GetDepositsByUser(id);
 
-        if (deposit is null)
+        if (deposits is null)
         {
             return NotFound("User not found");
         }
 
-        return Ok(deposit);
+        return Ok(deposits);
     }
 
     [HttpPost]
     public ActionResult<Deposit> Post(Deposit deposit)
     {
         if (deposit is null)
+        {
             return BadRequest();
+        }
+
+        var amoutDeposit = _repository.Get(d => d.UserId == deposit.UserId)!;
+
+        if (amoutDeposit.Amount > 0)
+        {
+            amoutDeposit.Amount += deposit.Amount;
+        }
 
         _repository.Create(deposit);
 

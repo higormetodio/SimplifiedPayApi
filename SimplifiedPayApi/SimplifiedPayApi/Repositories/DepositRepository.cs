@@ -10,7 +10,8 @@ public class DepositRepository : Repository<Deposit>, IDepositRepository
     {
     }
 
-    public Deposit? GetDepositByUser(int id)
+    public ICollection<Deposit>? GetDepositsByUser(int id)
         => _context.Deposits.Include(d => d.User)
-                            .FirstOrDefault(d => d.UserId == id);
+                            .Where(d => d.UserId == id)
+                            .ToList();
 }
