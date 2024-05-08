@@ -13,4 +13,6 @@ public class Wallet
     public UserType UserType { get; set; }
     [JsonIgnore(Condition = JsonIgnoreCondition.Always)]
     public ICollection<Transaction>? Transactions { get; set; }
+    [JsonIgnore(Condition = JsonIgnoreCondition.Always)]
+    public ICollection<Deposit> Deposits { get; set; }
 }

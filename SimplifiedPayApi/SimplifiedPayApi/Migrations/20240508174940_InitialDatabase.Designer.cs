@@ -12,7 +12,7 @@ using SimplifiedPayApi.Context;
 namespace SimplifiedPayApi.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240508163320_InitialDatabase")]
+    [Migration("20240508174940_InitialDatabase")]
     partial class InitialDatabase
     {
         /// <inheritdoc />
@@ -24,6 +24,24 @@ namespace SimplifiedPayApi.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.Entity("SimplifiedPayApi.Models.Deposit", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("DepositorId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DepositorId");
+
+                    b.ToTable("DEPOSITS", (string)null);
+                });
 
             modelBuilder.Entity("SimplifiedPayApi.Models.Transaction", b =>
                 {
@@ -114,6 +132,18 @@ namespace SimplifiedPayApi.Migrations
                     b.ToTable("WALLETS", (string)null);
                 });
 
+            modelBuilder.Entity("SimplifiedPayApi.Models.Deposit", b =>
+                {
+                    b.HasOne("SimplifiedPayApi.Models.Wallet", "Depositor")
+                        .WithMany("Deposits")
+                        .HasForeignKey("DepositorId")
+                        .OnDelete(DeleteBehavior.ClientNoAction)
+                        .IsRequired()
+                        .HasConstraintName("FK_DEPOSIT_WALLET_DEPOSITOR");
+
+                    b.Navigation("Depositor");
+                });
+
             modelBuilder.Entity("SimplifiedPayApi.Models.Transaction", b =>
                 {
                     b.HasOne("SimplifiedPayApi.Models.Wallet", "Payer")
@@ -137,6 +167,8 @@ namespace SimplifiedPayApi.Migrations
 
             modelBuilder.Entity("SimplifiedPayApi.Models.Wallet", b =>
                 {
+                    b.Navigation("Deposits");
+
                     b.Navigation("Transactions");
                 });
 #pragma warning restore 612, 618

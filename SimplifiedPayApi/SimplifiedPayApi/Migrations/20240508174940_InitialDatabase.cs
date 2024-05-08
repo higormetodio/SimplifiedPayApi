@@ -32,6 +32,24 @@ namespace SimplifiedPayApi.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "DEPOSITS",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    DepositorId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_DEPOSITS", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_DEPOSIT_WALLET_DEPOSITOR",
+                        column: x => x.DepositorId,
+                        principalTable: "WALLETS",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
                 name: "TRANSACTIONS",
                 columns: table => new
                 {
@@ -59,6 +77,11 @@ namespace SimplifiedPayApi.Migrations
                 });
 
             migrationBuilder.CreateIndex(
+                name: "IX_DEPOSITS_DepositorId",
+                table: "DEPOSITS",
+                column: "DepositorId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_TRANSACTIONS_PayerId",
                 table: "TRANSACTIONS",
                 column: "PayerId");
@@ -84,6 +107,9 @@ namespace SimplifiedPayApi.Migrations
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "DEPOSITS");
+
             migrationBuilder.DropTable(
                 name: "TRANSACTIONS");
 

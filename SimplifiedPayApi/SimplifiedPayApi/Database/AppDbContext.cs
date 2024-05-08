@@ -18,5 +18,6 @@ public sealed class AppDbContext : DbContext
     {
         modelBuilder.ApplyConfiguration(new WalletMap());
         modelBuilder.ApplyConfiguration(new TransactionMap());
+        modelBuilder.ApplyConfiguration(new DepositMap());
     }
 }

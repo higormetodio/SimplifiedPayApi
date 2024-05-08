@@ -22,6 +22,24 @@ namespace SimplifiedPayApi.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("SimplifiedPayApi.Models.Deposit", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("DepositorId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DepositorId");
+
+                    b.ToTable("DEPOSITS", (string)null);
+                });
+
             modelBuilder.Entity("SimplifiedPayApi.Models.Transaction", b =>
                 {
                     b.Property<int>("Id")
@@ -111,6 +129,18 @@ namespace SimplifiedPayApi.Migrations
                     b.ToTable("WALLETS", (string)null);
                 });
 
+            modelBuilder.Entity("SimplifiedPayApi.Models.Deposit", b =>
+                {
+                    b.HasOne("SimplifiedPayApi.Models.Wallet", "Depositor")
+                        .WithMany("Deposits")
+                        .HasForeignKey("DepositorId")
+                        .OnDelete(DeleteBehavior.ClientNoAction)
+                        .IsRequired()
+                        .HasConstraintName("FK_DEPOSIT_WALLET_DEPOSITOR");
+
+                    b.Navigation("Depositor");
+                });
+
             modelBuilder.Entity("SimplifiedPayApi.Models.Transaction", b =>
                 {
                     b.HasOne("SimplifiedPayApi.Models.Wallet", "Payer")
@@ -134,6 +164,8 @@ namespace SimplifiedPayApi.Migrations
 
             modelBuilder.Entity("SimplifiedPayApi.Models.Wallet", b =>
                 {
+                    b.Navigation("Deposits");
+
                     b.Navigation("Transactions");
                 });
 #pragma warning restore 612, 618
