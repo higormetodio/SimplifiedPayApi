@@ -11,7 +11,6 @@ public class TransactionRepository : Repository<Transaction>, ITransactionReposi
         
     }
 
-    public Transaction? GetTransactionByWallet(int id)
-        => _context.Transactions.Include(t => t.Payer)
-                                .FirstOrDefault(t => t.PayerId == id);
+    public ICollection<Transaction>? GetTransactionsByWallet(int id)
+        => GetAll().Where(t => t.PayerId == id).ToList();
 }

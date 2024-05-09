@@ -68,11 +68,6 @@ public class WalletController : Controller
         var user = _repository.Get(u => u.IdentificationNumber == newUser.IdentificationNumber ||
                                         u.Email == newUser.Email);
 
-        if (user != null)
-        {
-            throw new DbUpdateException(message: "The Identication Number or Email already registered");
-        }
-
         _repository.Update(newUser);
 
         return Ok(newUser);

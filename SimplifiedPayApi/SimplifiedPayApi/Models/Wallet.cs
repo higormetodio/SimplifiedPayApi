@@ -14,5 +14,5 @@ public class Wallet
     [JsonIgnore(Condition = JsonIgnoreCondition.Always)]
     public ICollection<Transaction>? Transactions { get; set; }
     [JsonIgnore(Condition = JsonIgnoreCondition.Always)]
-    public ICollection<Deposit> Deposits { get; set; }
+    public ICollection<Deposit>? Deposits { get; set; }
 }

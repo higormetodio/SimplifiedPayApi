@@ -23,7 +23,7 @@ public class DepositController : Controller
     [HttpGet("wallet/{id:int}")]
     public ActionResult<Deposit> GetDepositByDepositor(int id)
     {
-        var depositor = _repositoryDeposit.GetDepositByWallet(id);
+        var depositor = _repositoryDeposit.GetDepositsByWallet(id);
 
         if (depositor is null)
         {
@@ -49,6 +49,7 @@ public class DepositController : Controller
         }
 
         _repositoryWallet.Update(WalletService.Credit(wallet, deposit.Amount));
+        _repository.Create(deposit);
 
         return Created();
     }

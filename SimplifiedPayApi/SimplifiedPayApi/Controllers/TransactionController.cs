@@ -26,7 +26,7 @@ public class TransactionController : Controller
     [HttpGet("wallet/{id:int}")]
     public ActionResult<Transaction> GetTransactionByPayer(int id)
     {
-        var transction = _repositoryTransaction.GetTransactionByWallet(id);
+        var transction = _repositoryTransaction.GetTransactionsByWallet(id);
 
         if (transction is null)
         {

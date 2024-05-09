@@ -10,7 +10,6 @@ public class DepositRepository : Repository<Deposit>, IDepositRepository
     {
     }
 
-    public Deposit? GetDepositByWallet(int id)
-        =>  _context.Deposits.Include(d => d.Depositor)
-                         .FirstOrDefault(d => d.DepositorId == id);
+    public ICollection<Deposit>? GetDepositsByWallet(int id)
+        => GetAll().Where(d => d.DepositorId == id).ToList();
 }

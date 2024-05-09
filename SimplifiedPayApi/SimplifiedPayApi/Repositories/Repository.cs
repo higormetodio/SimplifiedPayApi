@@ -1,4 +1,5 @@
-﻿using SimplifiedPayApi.Context;
+﻿using Microsoft.EntityFrameworkCore;
+using SimplifiedPayApi.Context;
 using System.Linq.Expressions;
 
 namespace SimplifiedPayApi.Repositories;
@@ -14,12 +15,12 @@ public class Repository<T> : IRepository<T> where T : class
 
     public IEnumerable<T> GetAll()
     {
-        return _context.Set<T>().ToList();
+        return _context.Set<T>().AsNoTracking().ToList();
     }
 
     public T? Get(Expression<Func<T, bool>> predicate)
     {
-        return _context.Set<T>().FirstOrDefault(predicate);
+        return _context.Set<T>().AsNoTracking().FirstOrDefault(predicate);
     }
 
     public T Create(T entity)

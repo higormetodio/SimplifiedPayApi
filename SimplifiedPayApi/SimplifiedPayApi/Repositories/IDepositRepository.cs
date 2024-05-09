@@ -4,5 +4,5 @@ namespace SimplifiedPayApi.Repositories;
 
 public interface IDepositRepository
 {
-    Deposit? GetDepositByWallet(int id);
+    ICollection<Deposit>? GetDepositsByWallet(int id);
 }
