@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SimplifiedPayApi.Models;
+using SimplifiedPayApi.Pagination;
 using SimplifiedPayApi.Repositories;
+using System.Text.Json;
 
 namespace SimplifiedPayApi.Controllers;
 
@@ -11,10 +13,12 @@ namespace SimplifiedPayApi.Controllers;
 public class WalletController : Controller
 {
     private readonly IRepository<Wallet> _repository;
+    private readonly IWalletRepository _reposityWallet;
 
-    public WalletController(IRepository<Wallet> repository)
+    public WalletController(IRepository<Wallet> repository, IWalletRepository reposityWallet)
     {
         _repository = repository;
+        _reposityWallet = reposityWallet;
     }
 
     [HttpGet]
@@ -23,6 +27,26 @@ public class WalletController : Controller
         var users = _repository.GetAll();
 
         return Ok(users);
+    }
+
+    [HttpGet("pagination")]
+    public ActionResult<IEnumerable<Wallet>> Get([FromQuery] WalletsParameters walletsParameters)
+    {
+        var wallets = _reposityWallet.GetWallets(walletsParameters);
+
+        var metadata = new
+        {
+            wallets.TotalCount,
+            wallets.PageSize,
+            wallets.CurrentPage,
+            wallets.TotalPages,
+            wallets.HasNext,
+            wallets.HasPrevious
+        };
+
+        Response.Headers.Append("X-Pagination", JsonSerializer.Serialize(metadata));
+
+        return Ok(wallets);
     }
 
     [HttpGet("{id:int}", Name = "BuscarUsuario")]
