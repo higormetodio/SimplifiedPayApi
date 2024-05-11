@@ -13,12 +13,12 @@ namespace SimplifiedPayApi.Controllers;
 public class WalletController : Controller
 {
     private readonly IRepository<Wallet> _repository;
-    private readonly IWalletRepository _reposityWallet;
+    private readonly IWalletRepository _repositoryWallet;
 
     public WalletController(IRepository<Wallet> repository, IWalletRepository reposityWallet)
     {
         _repository = repository;
-        _reposityWallet = reposityWallet;
+        _repositoryWallet = reposityWallet;
     }
 
     [HttpGet]
@@ -32,8 +32,26 @@ public class WalletController : Controller
     [HttpGet("pagination")]
     public ActionResult<IEnumerable<Wallet>> Get([FromQuery] WalletsParameters walletsParameters)
     {
-        var wallets = _reposityWallet.GetWallets(walletsParameters);
+        var wallets = _repositoryWallet.GetWallets(walletsParameters);
+        return GetWallet(wallets);
+    }
 
+    [HttpGet("filter/fullname/pagination")]
+    public ActionResult<IEnumerable<Wallet>> Get([FromQuery] WalletFullNameFilter walletFullNameFilter)
+    {
+        var wallets = _repositoryWallet.GetWalletFullNameFilter(walletFullNameFilter);
+        return GetWallet(wallets);
+    }
+
+    [HttpGet("filter/balance/pagination")]
+    public ActionResult<IEnumerable<Wallet>> Get([FromQuery] WalletBalanceFilter walletBalanceFilter)
+    {
+        var wallets = _repositoryWallet.GetWalletBalanceFilter(walletBalanceFilter);
+        return GetWallet(wallets);
+    }
+
+    private ActionResult<IEnumerable<Wallet>> GetWallet(PagedList<Wallet> wallets)
+    {
         var metadata = new
         {
             wallets.TotalCount,
