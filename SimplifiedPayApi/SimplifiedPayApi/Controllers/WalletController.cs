@@ -22,31 +22,31 @@ public class WalletController : Controller
     }
 
     [HttpGet]
-    public ActionResult<IEnumerable<Wallet>> Get()
+    public async Task<ActionResult<IEnumerable<Wallet>>> Get()
     {
-        var users = _repository.GetAll();
+        var users = await _repository.GetAllAsync();
 
         return Ok(users);
     }
 
     [HttpGet("pagination")]
-    public ActionResult<IEnumerable<Wallet>> Get([FromQuery] WalletsParameters walletsParameters)
+    public async Task<ActionResult<IEnumerable<Wallet>>> Get([FromQuery] WalletsParameters walletsParameters)
     {
-        var wallets = _repositoryWallet.GetWallets(walletsParameters);
+        var wallets = await _repositoryWallet.GetWalletsAsync(walletsParameters);
         return GetWallet(wallets);
     }
 
     [HttpGet("filter/fullname/pagination")]
-    public ActionResult<IEnumerable<Wallet>> Get([FromQuery] WalletFullNameFilter walletFullNameFilter)
+    public async Task<ActionResult<IEnumerable<Wallet>>> Get([FromQuery] WalletFullNameFilter walletFullNameFilter)
     {
-        var wallets = _repositoryWallet.GetWalletFullNameFilter(walletFullNameFilter);
+        var wallets = await _repositoryWallet.GetWalletFullNameFilterAsync(walletFullNameFilter);
         return GetWallet(wallets);
     }
 
     [HttpGet("filter/balance/pagination")]
-    public ActionResult<IEnumerable<Wallet>> Get([FromQuery] WalletBalanceFilter walletBalanceFilter)
+    public async Task<ActionResult<IEnumerable<Wallet>>> Get([FromQuery] WalletBalanceFilter walletBalanceFilter)
     {
-        var wallets = _repositoryWallet.GetWalletBalanceFilter(walletBalanceFilter);
+        var wallets = await _repositoryWallet.GetWalletBalanceFilterAsync(walletBalanceFilter);
         return GetWallet(wallets);
     }
 
@@ -68,9 +68,9 @@ public class WalletController : Controller
     }
 
     [HttpGet("{id:int}", Name = "BuscarUsuario")]
-    public ActionResult<Wallet> Get(int id)
+    public async Task<ActionResult<Wallet>> Get(int id)
     {
-        var user = _repository.Get(u => u.Id == id);
+        var user = await _repository.GetAsync(u => u.Id == id);
 
         if (user is null)
         {
@@ -81,14 +81,14 @@ public class WalletController : Controller
     }
 
     [HttpPost]
-    public ActionResult Post(Wallet newUser)
+    public async Task<ActionResult> Post(Wallet newUser)
     {
         if (newUser is null)
         {
             return BadRequest();
         }
 
-        var user = _repository.Get(u => u.IdentificationNumber == newUser.IdentificationNumber ||
+        var user = await _repository.GetAsync(u => u.IdentificationNumber == newUser.IdentificationNumber ||
                                         u.Email == newUser.Email);
 
         if (user != null)
@@ -102,12 +102,12 @@ public class WalletController : Controller
     }
 
     [HttpPut("{id:int}")]
-    public ActionResult Put(int id, Wallet newUser)
+    public async Task<ActionResult> Put(int id, Wallet newUser)
     {
         if (id != newUser.Id)
             return BadRequest();
 
-        var user = _repository.Get(u => u.IdentificationNumber == newUser.IdentificationNumber ||
+        var user = await _repository.GetAsync(u => u.IdentificationNumber == newUser.IdentificationNumber ||
                                         u.Email == newUser.Email);
 
         _repository.Update(newUser);
@@ -116,9 +116,9 @@ public class WalletController : Controller
     }
 
     [HttpDelete("{id:int}")]
-    public ActionResult Delete(int id)
+    public async Task<ActionResult> Delete(int id)
     {
-        var user = _repository.Get(u => u.Id == id);
+        var user = await _repository.GetAsync(u => u.Id == id);
 
         if (user is null)
             return NotFound("User not found...");

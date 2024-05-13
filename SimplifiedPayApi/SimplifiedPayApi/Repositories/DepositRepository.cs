@@ -10,6 +10,10 @@ public class DepositRepository : Repository<Deposit>, IDepositRepository
     {
     }
 
-    public ICollection<Deposit>? GetDepositsByWallet(int id)
-        => GetAll().Where(d => d.DepositorId == id).ToList();
+    public async Task<ICollection<Deposit>?> GetDepositsByWalletAsync(int id)
+    {
+        var deposits = await GetAllAsync();
+
+        return deposits.Where(d => d.DepositorId == id).ToList();
+    }
 }

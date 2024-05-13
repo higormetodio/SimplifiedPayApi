@@ -11,6 +11,10 @@ public class TransactionRepository : Repository<Transaction>, ITransactionReposi
         
     }
 
-    public ICollection<Transaction>? GetTransactionsByWallet(int id)
-        => GetAll().Where(t => t.PayerId == id).ToList();
+    public async Task<ICollection<Transaction>?> GetTransactionsByWalletAsync(int id)
+    {
+        var transactions = await GetAllAsync();
+        
+        return transactions.Where(t => t.PayerId == id).ToList();
+    }
 }

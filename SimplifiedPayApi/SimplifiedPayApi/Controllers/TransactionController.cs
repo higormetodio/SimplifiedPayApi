@@ -24,9 +24,9 @@ public class TransactionController : Controller
     }
 
     [HttpGet("wallet/{id:int}")]
-    public ActionResult<Transaction> GetTransactionByPayer(int id)
+    public async Task<ActionResult<Transaction>> GetTransactionByPayerAsync(int id)
     {
-        var transction = _repositoryTransaction.GetTransactionsByWallet(id);
+        var transction = await _repositoryTransaction.GetTransactionsByWalletAsync(id);
 
         if (transction is null)
         {
@@ -45,7 +45,7 @@ public class TransactionController : Controller
         if (transaction.PayerId == transaction.ReceiverId)
             return BadRequest("The Payer and Receiver can't the same.");
 
-        var payer = _repositoryWallet.Get(w => w.Id == transaction.PayerId);
+        var payer = await _repositoryWallet.GetAsync(w => w.Id == transaction.PayerId);
 
         if (payer is null)
             return BadRequest("User not found...");
@@ -55,7 +55,7 @@ public class TransactionController : Controller
             return BadRequest("The Payer is a Shopkeeper. Unauthorized transaction");
         }
         
-        var receiver = _repositoryWallet.Get(w => w.Id == transaction.ReceiverId)!;
+        var receiver = await _repositoryWallet.GetAsync(w => w.Id == transaction.ReceiverId)!;
 
         _repositoryWallet.Update(WalletService.Debit(payer, transaction.Amount));
         _repositoryWallet.Update(WalletService.Credit(receiver, transaction.Amount));

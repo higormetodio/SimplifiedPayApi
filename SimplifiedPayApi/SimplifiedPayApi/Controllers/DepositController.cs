@@ -21,9 +21,9 @@ public class DepositController : Controller
     }
 
     [HttpGet("wallet/{id:int}")]
-    public ActionResult<Deposit> GetDepositByDepositor(int id)
+    public async Task<ActionResult<Deposit>> GetDepositByDepositor(int id)
     {
-        var depositor = _repositoryDeposit.GetDepositsByWallet(id);
+        var depositor = await _repositoryDeposit.GetDepositsByWalletAsync(id);
 
         if (depositor is null)
         {
@@ -34,14 +34,14 @@ public class DepositController : Controller
     }
 
     [HttpPost]
-    public ActionResult<Deposit> Post(Deposit deposit)
+    public async Task<ActionResult<Deposit>> Post(Deposit deposit)
     {
         if (deposit is null)
         {
             return BadRequest();
         }
 
-        var wallet = _repositoryWallet.Get(w => w.Id == deposit.DepositorId);
+        var wallet = await _repositoryWallet.GetAsync(w => w.Id == deposit.DepositorId);
 
         if (wallet is null)
         {

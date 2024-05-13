@@ -4,5 +4,5 @@ namespace SimplifiedPayApi.Repositories;
 
 public interface ITransactionRepository
 {
-    ICollection<Transaction>? GetTransactionsByWallet(int id);
+    Task<ICollection<Transaction>?> GetTransactionsByWalletAsync(int id);
 }
