@@ -9,7 +9,7 @@ namespace SimplifiedPayApi.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-[ApiExplorerSettings()]
+
 public class WalletController : Controller
 {
     private readonly IRepository<Wallet> _repository;
