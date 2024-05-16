@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Asp.Versioning;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SimplifiedPayApi.Models;
 using SimplifiedPayApi.Repositories;
@@ -7,8 +8,9 @@ using System.Security.Claims;
 
 namespace SimplifiedPayApi.Controllers;
 
-[Route("api/[controller]")]
+[Route("api/v{version:apiVersion}/deposit")]
 [ApiController]
+[ApiVersion("1.0")]
 public class DepositController : Controller
 {
     private readonly IRepository<Deposit> _repository;

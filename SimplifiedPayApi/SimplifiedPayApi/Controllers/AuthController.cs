@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Asp.Versioning;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using SimplifiedPayApi.Models;
@@ -8,8 +9,9 @@ using System.Security.Claims;
 
 namespace SimplifiedPayApi.Controllers;
 
-[Route("api/[controller]")]
+[Route("api/v{version:apiVersion}/authorization")]
 [ApiController]
+[ApiVersion("1.0")]
 public class AuthController : Controller
 {
     private readonly ITokenService _tokenService;
@@ -29,7 +31,7 @@ public class AuthController : Controller
     }
 
     [HttpPost]
-    [Route("CreateRole")]
+    [Route("create-role")]
     [Authorize("AdminOnly")]
     public async Task<ActionResult> CreateRole(string roleName)
     {
@@ -55,7 +57,7 @@ public class AuthController : Controller
     }
 
     [HttpPost]
-    [Route("AddUserRole")]
+    [Route("add-user-role")]
     [Authorize("AdminOnly")]
     public async Task<ActionResult> AddUserRole(string email, string roleName)
     {
@@ -127,7 +129,7 @@ public class AuthController : Controller
     }
 
     [HttpPost]
-    [Route("Register")]
+    [Route("register")]
     public async Task<ActionResult> Register([FromBody] RegisterModel model)
     {
         var userExists = await _userManager.FindByNameAsync(model.UserName!);

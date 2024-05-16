@@ -1,3 +1,4 @@
+using Asp.Versioning;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -9,6 +10,7 @@ using SimplifiedPayApi.Logging;
 using SimplifiedPayApi.Models;
 using SimplifiedPayApi.Repositories;
 using SimplifiedPayApi.Services;
+using System.Runtime;
 using System.Text;
 using System.Text.Json.Serialization;
 
@@ -59,6 +61,20 @@ builder.Services.AddSwaggerGen(c =>
             new string[] {}
         }
     });
+});
+
+builder.Services.AddApiVersioning(options =>
+{
+    options.DefaultApiVersion = new ApiVersion(1, 0);
+    options.AssumeDefaultVersionWhenUnspecified = true;
+    options.ReportApiVersions = true;
+    options.ApiVersionReader = ApiVersionReader.Combine(
+                                                new QueryStringApiVersionReader(),
+                                                new UrlSegmentApiVersionReader());
+}).AddApiExplorer(options =>
+{
+    options.GroupNameFormat = "'v'VVV";
+    options.SubstituteApiVersionInUrl = true;
 });
 
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>()

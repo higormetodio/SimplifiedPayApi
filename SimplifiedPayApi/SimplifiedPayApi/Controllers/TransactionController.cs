@@ -4,11 +4,13 @@ using SimplifiedPayApi.Models;
 using SimplifiedPayApi.Services;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
+using Asp.Versioning;
 
 namespace SimplifiedPayApi.Controllers;
 
-[Route("api/[controller]")]
+[Route("api/v{version:apiVersion}/transaction")]
 [ApiController]
+[ApiVersion("1.0")]
 public class TransactionController : Controller
 {
     private readonly IRepository<Transaction> _repository;

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Asp.Versioning;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -10,9 +11,9 @@ using System.Text.Json;
 
 namespace SimplifiedPayApi.Controllers;
 
-[Route("api/[controller]")]
+[Route("api/v{version:apiVersion}/wallet")]
 [ApiController]
-
+[ApiVersion("1.0")]
 public class WalletController : Controller
 {
     private readonly IRepository<Wallet> _repository;
