@@ -9,4 +9,5 @@ public class Deposit
     public int DepositorId { get; set; }
     [JsonIgnore(Condition = JsonIgnoreCondition.Always)]
     public Wallet? Depositor { get; set; }
+    public DateTime TimeSpan { get; set; }
 }

@@ -19,6 +19,11 @@ namespace SimplifiedPayApi.Database.Mappings
                    .HasColumnType("MONEY")
                    .IsRequired();
 
+            builder.Property(d => d.TimeSpan)
+                   .HasColumnType("DATETIME")
+                   .HasDefaultValueSql("GETDATE()")
+                   .IsRequired();
+
             builder.HasOne(d => d.Depositor)
                    .WithMany(u => u.Deposits)
                    .HasConstraintName("FK_DEPOSIT_WALLET_DEPOSITOR")
