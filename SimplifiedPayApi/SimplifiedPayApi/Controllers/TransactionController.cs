@@ -2,6 +2,8 @@
 using SimplifiedPayApi.Repositories;
 using SimplifiedPayApi.Models;
 using SimplifiedPayApi.Services;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 
 namespace SimplifiedPayApi.Controllers;
 
@@ -24,19 +26,30 @@ public class TransactionController : Controller
     }
 
     [HttpGet("wallet/{id:int}")]
-    public async Task<ActionResult<Transaction>> GetTransactionByPayerAsync(int id)
+    [Authorize(Policy = "AdminOnly, UserOnly")]
+    public async Task<ActionResult<Transaction>> GetTransactionsByPayerAsync(int id)
     {
-        var transction = await _repositoryTransaction.GetTransactionsByWalletAsync(id);
+        var transaction = await _repositoryTransaction.GetTransactionsByWalletAsync(id);
+        var wallet = await _repositoryWallet.GetAsync(w => w.Id == id);
 
-        if (transction is null)
+        if (transaction is null)
         {
             return NotFound("User not found...");
         }
 
-        return Ok(transction);
+        var loginEmail = User.FindFirst(ClaimTypes.Email)!.Value;
+        var isAdmin = User.IsInRole("Admin");
+
+        if (loginEmail == wallet!.Email || isAdmin)
+        {
+            return Ok(transaction);
+        }
+
+        return Unauthorized(new Response { Status = "Erro", Message = "Unauthorized user" });
     }
 
     [HttpPost]
+    [Authorize(Policy = "AdminOnly, UserOnly")]
     public async Task<ActionResult<Transaction>> Post(Transaction transaction)
     {
         if (transaction is null)
@@ -54,24 +67,32 @@ public class TransactionController : Controller
         {
             return BadRequest("The Payer is a Shopkeeper. Unauthorized transaction");
         }
-        
-        var receiver = await _repositoryWallet.GetAsync(w => w.Id == transaction.ReceiverId)!;
 
-        _repositoryWallet.Update(WalletService.Debit(payer, transaction.Amount));
-        _repositoryWallet.Update(WalletService.Credit(receiver, transaction.Amount));
+        var loginEmail = User.FindFirst(ClaimTypes.Email)!.Value;
+        var isAdmin = User.IsInRole("Admin");
 
-        _repository.Create(transaction);
-
-        string message = await _transactionService.TransactionValidation();
-
-        if (message != "Autorizado")
+        if (loginEmail == payer.Email || isAdmin)
         {
-            _repositoryWallet.RollBack();
-            _repository.RollBack();
+            var receiver = await _repositoryWallet.GetAsync(w => w.Id == transaction.ReceiverId)!;
 
-            return BadRequest("Unauthorized transaction");
+            _repositoryWallet.Update(WalletService.Debit(payer, transaction.Amount));
+            _repositoryWallet.Update(WalletService.Credit(receiver, transaction.Amount));
+
+            _repository.Create(transaction);
+
+            string message = await _transactionService.TransactionValidation();
+
+            if (message != "Autorizado")
+            {
+                _repositoryWallet.RollBack();
+                _repository.RollBack();
+
+                return BadRequest("Unauthorized transaction");
+            }
+
+            return Created();
         }
 
-        return Created();
+        return Unauthorized(new Response { Status = "Erro", Message = "Unauthorized user" });
     }
 }

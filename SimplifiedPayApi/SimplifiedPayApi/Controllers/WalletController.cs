@@ -1,8 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SimplifiedPayApi.Models;
 using SimplifiedPayApi.Pagination;
 using SimplifiedPayApi.Repositories;
+using System.Security.Claims;
 using System.Text.Json;
 
 namespace SimplifiedPayApi.Controllers;
@@ -21,7 +24,9 @@ public class WalletController : Controller
         _repositoryWallet = reposityWallet;
     }
 
+    [Authorize]
     [HttpGet]
+    [Authorize(Policy = "AdminOnly")]
     public async Task<ActionResult<IEnumerable<Wallet>>> Get()
     {
         var users = await _repository.GetAllAsync();
@@ -30,6 +35,7 @@ public class WalletController : Controller
     }
 
     [HttpGet("pagination")]
+    [Authorize(Policy = "AdminOnly")]
     public async Task<ActionResult<IEnumerable<Wallet>>> Get([FromQuery] WalletsParameters walletsParameters)
     {
         var wallets = await _repositoryWallet.GetWalletsAsync(walletsParameters);
@@ -37,6 +43,7 @@ public class WalletController : Controller
     }
 
     [HttpGet("filter/fullname/pagination")]
+    [Authorize(Policy = "AdminOnly")]
     public async Task<ActionResult<IEnumerable<Wallet>>> Get([FromQuery] WalletFullNameFilter walletFullNameFilter)
     {
         var wallets = await _repositoryWallet.GetWalletFullNameFilterAsync(walletFullNameFilter);
@@ -44,6 +51,7 @@ public class WalletController : Controller
     }
 
     [HttpGet("filter/balance/pagination")]
+    [Authorize(Policy = "AdminOnly")]
     public async Task<ActionResult<IEnumerable<Wallet>>> Get([FromQuery] WalletBalanceFilter walletBalanceFilter)
     {
         var wallets = await _repositoryWallet.GetWalletBalanceFilterAsync(walletBalanceFilter);
@@ -66,8 +74,9 @@ public class WalletController : Controller
 
         return Ok(wallets);
     }
-
+   
     [HttpGet("{id:int}", Name = "BuscarUsuario")]
+    [Authorize(Policy = "AdminOnly, UserOnly")]
     public async Task<ActionResult<Wallet>> Get(int id)
     {
         var user = await _repository.GetAsync(u => u.Id == id);
@@ -77,10 +86,21 @@ public class WalletController : Controller
             return NotFound("User not found...");
         }
 
-        return Ok(user);
+        var loginEmail = User.FindFirst(ClaimTypes.Email)!.Value;
+        var isAdmin = User.IsInRole("Admin");
+
+        if (loginEmail == user.Email || isAdmin)
+        {
+            return Ok(user);
+        }
+
+        return Unauthorized(new Response { Status = "Erro", Message = "Unauthorized user" });
+
+        
     }
 
     [HttpPost]
+    [Authorize(Policy = "AdminOnly")]
     public async Task<ActionResult> Post(Wallet newUser)
     {
         if (newUser is null)
@@ -102,6 +122,7 @@ public class WalletController : Controller
     }
 
     [HttpPut("{id:int}")]
+    [Authorize(Policy = "AdminOnly")]
     public async Task<ActionResult> Put(int id, Wallet newUser)
     {
         if (id != newUser.Id)
@@ -116,6 +137,7 @@ public class WalletController : Controller
     }
 
     [HttpDelete("{id:int}")]
+    [Authorize(Policy = "AdminOnly")]
     public async Task<ActionResult> Delete(int id)
     {
         var user = await _repository.GetAsync(u => u.Id == id);

@@ -16,13 +16,68 @@ public class AuthController : Controller
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly RoleManager<IdentityRole> _roleManager;
     private readonly IConfiguration _configuration;
+    private readonly ILogger<AuthController> _logger;
 
-    public AuthController(ITokenService tokenService, UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager, IConfiguration configuration)
+    public AuthController(ITokenService tokenService, UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager, 
+                          IConfiguration configuration, ILogger<AuthController> logger)
     {
         _tokenService = tokenService;
         _userManager = userManager;
         _roleManager = roleManager;
         _configuration = configuration;
+        _logger = logger;
+    }
+
+    [HttpPost]
+    [Route("CreateRole")]
+    [Authorize("AdminOnly")]
+    public async Task<ActionResult> CreateRole(string roleName)
+    {
+        var roleExist = await _roleManager.RoleExistsAsync(roleName);
+
+        if (!roleExist)
+        {
+            var roleResult = await _roleManager.CreateAsync(new IdentityRole(roleName));
+
+            if (roleResult.Succeeded)
+            {
+                _logger.LogInformation(1, "Role Added");
+                return Ok(new Response { Status = "Success", Message = $"Role {roleName} added successfully." });
+            }
+            else
+            {
+                _logger.LogInformation(2, "Error");
+                return BadRequest(new Response { Status = "Error", Message = $"Issue adding the new {roleName} role." });
+            }
+        }
+
+        return BadRequest(new Response { Status = "Error", Message = $"Role already exist." });
+    }
+
+    [HttpPost]
+    [Route("AddUserRole")]
+    [Authorize("AdminOnly")]
+    public async Task<ActionResult> AddUserRole(string email, string roleName)
+    {
+        var user = await _userManager.FindByEmailAsync(email);
+
+        if (user is not null)
+        {
+            var result = await _userManager.AddToRoleAsync(user, roleName);
+
+            if (result.Succeeded)
+            {
+                _logger.LogInformation(1, $"User {user.Email} add the {roleName} role");
+                return Ok(new Response { Status = "Success", Message = $"User {user.Email} add the {roleName} role" });
+            }
+            else
+            {
+                _logger.LogInformation(2, $"Error: Unable to add user {user.Email} to the {roleName} role.");
+                return BadRequest(new Response { Status = "Error", Message = $"Error: Unable to add user {user.Email} to the {roleName} role." });
+            }
+        }
+
+        return BadRequest(new { error = "Unable to find user." });
     }
 
     [HttpPost]
@@ -39,6 +94,7 @@ public class AuthController : Controller
             {
                 new Claim(ClaimTypes.Name, user.UserName!),
                 new Claim(ClaimTypes.Email, user.Email!),
+                new Claim("id", user.UserName!),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
             };
 
@@ -100,6 +156,7 @@ public class AuthController : Controller
 
     [HttpPost]
     [Route("refresh-token")]
+    [Authorize(Policy = "AdminOnly, UserOnly")]
     public async Task<ActionResult> RefreshToken(TokenModel tokenModel)
     {
         if (tokenModel is null)
@@ -141,9 +198,9 @@ public class AuthController : Controller
         });
     }
 
-    [Authorize]
     [HttpPost]
     [Route("revoke/{username}")]
+    [Authorize("AdminOnly")]
     public async Task<ActionResult> Revoke(string username)
     {
         var user = await _userManager.FindByNameAsync(username);

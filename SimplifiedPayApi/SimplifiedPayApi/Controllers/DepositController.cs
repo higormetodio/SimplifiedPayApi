@@ -1,7 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using SimplifiedPayApi.Models;
 using SimplifiedPayApi.Repositories;
 using SimplifiedPayApi.Services;
+using System.Security.Claims;
 
 namespace SimplifiedPayApi.Controllers;
 
@@ -21,19 +23,30 @@ public class DepositController : Controller
     }
 
     [HttpGet("wallet/{id:int}")]
-    public async Task<ActionResult<Deposit>> GetDepositByDepositor(int id)
+    [Authorize(Policy = "AdminOnly, UserOnly")]
+    public async Task<ActionResult<Deposit>> GetDepositsByDepositor(int id)
     {
         var depositor = await _repositoryDeposit.GetDepositsByWalletAsync(id);
+        var wallet = await _repositoryWallet.GetAsync(w => w.Id == id);
 
         if (depositor is null)
         {
             return BadRequest("User not found...");
         }
 
-        return Ok(depositor);
+        var loginEmail = User.FindFirst(ClaimTypes.Email)!.Value;
+        var isAdmin = User.IsInRole("Admin");
+
+        if (loginEmail == wallet!.Email || isAdmin)
+        {
+            return Ok(depositor);
+        }
+
+        return Unauthorized(new Response { Status = "Erro", Message = "Unauthorized user" });
     }
 
     [HttpPost]
+    [Authorize(Policy = "AdminOnly, UserOnly")]
     public async Task<ActionResult<Deposit>> Post(Deposit deposit)
     {
         if (deposit is null)
@@ -48,9 +61,17 @@ public class DepositController : Controller
             return BadRequest("User not found...");
         }
 
-        _repositoryWallet.Update(WalletService.Credit(wallet, deposit.Amount));
-        _repository.Create(deposit);
+        var loginEmail = User.FindFirst(ClaimTypes.Email)!.Value;
+        var isAdmin = User.IsInRole("Admin");
 
-        return Created();
+        if (loginEmail == wallet!.Email || isAdmin)
+        {
+            _repositoryWallet.Update(WalletService.Credit(wallet, deposit.Amount));
+            _repository.Create(deposit);
+
+            return Created();
+        }
+
+        return Unauthorized(new Response { Status = "Erro", Message = "Unauthorized user" });
     }
 }
