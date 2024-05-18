@@ -4,5 +4,5 @@ namespace SimplifiedPayApi.Repositories;
 
 public interface IDepositRepository
 {
-    Task <ICollection<Deposit>?> GetDepositsByWalletAsync(int id);
+    Task <IEnumerable<Deposit>?> GetDepositsByWalletAsync(int id);
 }

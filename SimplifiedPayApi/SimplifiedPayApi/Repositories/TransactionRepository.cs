@@ -11,7 +11,7 @@ public class TransactionRepository : Repository<Transaction>, ITransactionReposi
         
     }
 
-    public async Task<ICollection<Transaction>?> GetTransactionsByWalletAsync(int id)
+    public async Task<IEnumerable<Transaction>?> GetTransactionsByWalletAsync(int id)
     {
         var transactions = await GetAllAsync();
         

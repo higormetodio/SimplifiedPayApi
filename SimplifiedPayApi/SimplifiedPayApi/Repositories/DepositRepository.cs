@@ -10,7 +10,7 @@ public class DepositRepository : Repository<Deposit>, IDepositRepository
     {
     }
 
-    public async Task<ICollection<Deposit>?> GetDepositsByWalletAsync(int id)
+    public async Task<IEnumerable<Deposit>?> GetDepositsByWalletAsync(int id)
     {
         var deposits = await GetAllAsync();
 

@@ -12,7 +12,7 @@ public sealed class AppDbContext : IdentityDbContext<ApplicationUser>
 
     }
 
-    public DbSet<Wallet> Users { get; set; }
+    public DbSet<Wallet> Wallets { get; set; }
     public DbSet<Transaction> Transactions { get; set; }
     public DbSet<Deposit> Deposits { get; set; }
 

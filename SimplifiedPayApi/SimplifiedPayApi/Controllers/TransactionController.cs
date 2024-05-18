@@ -11,6 +11,7 @@ namespace SimplifiedPayApi.Controllers;
 [Route("api/v{version:apiVersion}/transaction")]
 [ApiController]
 [ApiVersion("1.0")]
+[Produces("application/json")]
 public class TransactionController : Controller
 {
     private readonly IRepository<Transaction> _repository;
@@ -27,14 +28,19 @@ public class TransactionController : Controller
         _transactionService = transactionService;
     }
 
+    /// <summary>
+    /// Get a list Transaction objects by Wallet Id 
+    /// </summary>
+    /// <param name="id"></param>
+    /// <returns>A list Transaction objects by Wallet Id</returns>
     [HttpGet("wallet/{id:int}")]
     [Authorize(Policy = "AdminOnly, UserOnly")]
-    public async Task<ActionResult<Transaction>> GetTransactionsByPayerAsync(int id)
+    public async Task<ActionResult<IEnumerable<Transaction>>> GetTransactionsByPayerAsync(int id)
     {
-        var transaction = await _repositoryTransaction.GetTransactionsByWalletAsync(id);
+        var transactions = await _repositoryTransaction.GetTransactionsByWalletAsync(id);
         var wallet = await _repositoryWallet.GetAsync(w => w.Id == id);
 
-        if (transaction is null)
+        if (wallet is null)
         {
             return NotFound("User not found...");
         }
@@ -42,14 +48,33 @@ public class TransactionController : Controller
         var loginEmail = User.FindFirst(ClaimTypes.Email)!.Value;
         var isAdmin = User.IsInRole("Admin");
 
+
         if (loginEmail == wallet!.Email || isAdmin)
         {
-            return Ok(transaction);
+            return Ok(transactions);
         }
 
         return Unauthorized(new Response { Status = "Erro", Message = "Unauthorized user" });
     }
 
+    /// <summary>
+    /// Create a new Transaction object
+    /// </summary>
+    /// <remarks>
+    /// Request example
+    /// POST api/version/transaction
+    /// {
+    ///     "id": 1,
+    ///     "amount": 500,
+    ///     "payerId": 1,
+    ///     "receiverId": 2,
+    ///     "status": true,
+    ///     "timestamp": "2024-05-10T20:33:49.996Z"
+    /// }
+    /// </remarks>
+    /// <param name="transaction"></param>
+    /// <returns>A new Transaction object created</returns>
+    /// <remarks>Return a new Transaction object created</remarks>
     [HttpPost]
     [Authorize(Policy = "AdminOnly, UserOnly")]
     public async Task<ActionResult<Transaction>> Post(Transaction transaction)

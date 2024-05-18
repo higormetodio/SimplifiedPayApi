@@ -10,6 +10,7 @@ using SimplifiedPayApi.Logging;
 using SimplifiedPayApi.Models;
 using SimplifiedPayApi.Repositories;
 using SimplifiedPayApi.Services;
+using System.Reflection;
 using System.Runtime;
 using System.Text;
 using System.Text.Json.Serialization;
@@ -35,7 +36,26 @@ builder.Services.AddHttpClient<TransactionService>();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
-    c.SwaggerDoc("v1", new OpenApiInfo { Title = "SimplifiedPayApi", Version = "v1" });
+    c.SwaggerDoc("v1", new OpenApiInfo 
+    { 
+        Title = "SimplifiedPayApi", 
+        Version = "v1",
+        Description = "Simplified payment simulator",
+        Contact = new OpenApiContact
+        {
+            Name = "Contact SimplifiedPayAPI",
+            Email = "contato@simplepay.com.br",
+            Url = new Uri("https://www.simplepay.com.br")
+        },
+        License = new OpenApiLicense
+        {
+            Name = "About LICX",
+            Url = new Uri("https://www.simplepay.com.br/license")
+        }
+    });
+
+    var xmlFileName = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    c.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFileName));
 
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
     {
