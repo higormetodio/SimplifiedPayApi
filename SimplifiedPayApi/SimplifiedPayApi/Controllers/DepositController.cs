@@ -58,13 +58,14 @@ public class DepositController : Controller
     /// </summary>
     /// <remarks>
     /// Request example
-    /// POST api/version/transaction
-    /// {
-    ///     "id": 1,
-    ///     "amount": 500,
-    ///     "depositorId": 2,
-    ///     "timeSpan": "2024-05-10T20:50:45.390Z"
-    /// }
+    /// 
+    ///     POST api/version/transaction
+    ///     {
+    ///         "id": 1,
+    ///         "amount": 500,
+    ///         "depositorId": 2,
+    ///         "timeSpan": "2024-05-10T20:50:45.390Z"
+    ///     }
     /// </remarks>
     /// <param name="deposit"></param>
     /// <returns>A new Deposit object created</returns>

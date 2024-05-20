@@ -131,16 +131,17 @@ public class WalletController : Controller
     /// </summary>
     /// <remarks>
     /// Request example
-    /// POST api/version/wallet
-    /// {
-    ///     "id": 1,
-    ///     "fullName": "Jose",
-    ///     "identificationNumber": "99999999999",
-    ///     "email": "jose@email.com",
-    ///     "password": "12345",
-    ///     "balance": 1000,
-    ///     "userType": 1
-    /// }
+    /// 
+    ///     POST api/version/wallet
+    ///     {
+    ///         "id": 1,
+    ///         "fullName": "Jose",
+    ///         "identificationNumber": "99999999999",
+    ///         "email": "jose@email.com",
+    ///         "password": "12345",
+    ///         "balance": 1000,
+    ///         "userType": 1
+    ///     }
     /// </remarks>
     /// <param name="newWallet"></param>
     /// <returns>A new Wallet object created</returns>
