@@ -6,8 +6,8 @@ namespace SimplifiedPayApi.Services;
 
 public class EmailService : IEmailService
 {
-    public async Task SendEmailAsync(IConfiguration configuration, string toName, string toEmail, string subject = "SimplePay Transaction OK", 
-                               string message = "You received a transaction through SimplePay", string fromEmail = "contatct@simplepay.com.br")
+    public async Task SendEmailAsync(IConfiguration configuration, string toName, string toEmail, string subject = "SimpliPay Transaction OK", 
+                               string message = "You received a transaction through SimpliPay", string fromEmail = "contatct@simplpay.com.br")
     {
         var host = configuration.GetSection("SMTP").GetValue<string>("Host");
         var port = configuration.GetSection("SMTP").GetValue<int>("Port");
