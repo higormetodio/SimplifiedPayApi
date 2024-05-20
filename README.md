@@ -1,5 +1,5 @@
 # SimpliPayApi
-Projeto para colocar em prática os conhecimentos obtidos em em treinamentos e estudos sobre Web API ASP.NET Core.
+Projeto para colocar em prática os conhecimentos obtidos em treinamentos e estudos sobre Web API ASP.NET Core.
 
 A ideia surgiu em replicar o Desafio Back-End proposto pela [PickPay](https://github.com/PicPay/picpay-desafio-backend). A ideia é um plataforma de pagamento simplificado para realizar depósitos e transferência de valores entre usuários, onde existem 2 tipos de usuários (usuários comuns e lojistas) e ambos tem carteira com dinheiro e realizam transferências.
 
