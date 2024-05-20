@@ -18,14 +18,19 @@ public class TransactionController : Controller
     private readonly IRepository<Wallet> _repositoryWallet;
     private readonly ITransactionRepository _repositoryTransaction;
     private readonly TransactionService _transactionService;
+    private readonly IEmailService _emailService;
+    private readonly IConfiguration _configuration;
 
-    public TransactionController(IRepository<Transaction> repository, IRepository<Wallet> repositoryWallet, 
-                                 ITransactionRepository repositoryTransaction, TransactionService transactionService)
+    public TransactionController(IRepository<Transaction> repository, IRepository<Wallet> repositoryWallet,
+                                 ITransactionRepository repositoryTransaction, TransactionService transactionService, 
+                                 IEmailService emailService, IConfiguration configuration)
     {
         _repository = repository;
         _repositoryWallet = repositoryWallet;
         _repositoryTransaction = repositoryTransaction;
         _transactionService = transactionService;
+        _emailService = emailService;
+        _configuration = configuration;
     }
 
     /// <summary>
@@ -62,15 +67,16 @@ public class TransactionController : Controller
     /// </summary>
     /// <remarks>
     /// Request example
-    /// POST api/version/transaction
-    /// {
-    ///     "id": 1,
-    ///     "amount": 500,
-    ///     "payerId": 1,
-    ///     "receiverId": 2,
-    ///     "status": true,
-    ///     "timestamp": "2024-05-10T20:33:49.996Z"
-    /// }
+    /// 
+    ///     POST api/version/transaction
+    ///     {
+    ///         "id": 1,
+    ///         "amount": 500,
+    ///         "payerId": 1,
+    ///         "receiverId": 2,
+    ///         "status": true,
+    ///         "timestamp": "2024-05-10T20:33:49.996Z"
+    ///     }
     /// </remarks>
     /// <param name="transaction"></param>
     /// <returns>A new Transaction object created</returns>
@@ -116,6 +122,8 @@ public class TransactionController : Controller
 
                 return BadRequest("Unauthorized transaction");
             }
+
+            await _emailService.SendEmailAsync(_configuration, receiver.FullName, receiver.Email);
 
             return Created();
         }
