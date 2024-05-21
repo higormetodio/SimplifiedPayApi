@@ -31,7 +31,7 @@ A ideia surgiu em replicar o Desafio Back-End proposto pela [PickPay](https://gi
 - Log Customizado
 - Paginação e Filtro nos Endpoints
 - Programação assíncrona
-- Autenticação, Altorização e Token JWT
+- Autenticação, Autorização e Token JWT
 - Versionamento de API
 - Documentação com Swagger
 - Utilizando envio de email na API (Utilizei [Sendgrid](https://sendgrid.com/en-us) como SMTP)
