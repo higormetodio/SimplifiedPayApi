@@ -4,13 +4,13 @@ Projeto para colocar em prática os conhecimentos obtidos em treinamentos e estu
 A ideia surgiu em replicar o Desafio Back-End proposto pela [PickPay](https://github.com/PicPay/picpay-desafio-backend), criando uma plataforma de pagamento simplificado para realizar depósitos e transferência de valores entre usuários, onde existem 2 tipos de usuários (usuários comuns e lojistas) e ambos tem carteira com dinheiro e realizam transferências.
 
 ## Requisitos
-- Para ambos tipos de usuário, precisamos do Nome Completo, CPF, e-mail e Senha. CPF/CNPJ e e-mails devem ser únicos no sistema. Sendo assim, seu sistema deve permitir apenas um cadastro com o mesmo CPF ou endereço de e-mail;
+- Para ambos os tipos de usuário, precisamos do Nome Completo, CPF, e-mail e Senha. CPF/CNPJ e e-mails devem ser únicos no sistema. Sendo assim, seu sistema deve permitir apenas um cadastro com o mesmo CPF ou endereço de e-mail;
 
 - Deve existir a possibilidade de cadastro, consulta, atualização e remoção da carteira (CRUD básico);
 
-- Os usuários podem realizar depósitos na própria carteira e consultar os seus saudos;
+- Os usuários podem realizar depósitos na própria carteira e consultar os seus saldos;
 
-- Usuários podem enviar dinheiro (efetuar transferência) para lojistas e entre usuários e cosultar as transferências realizadas;
+- Usuários podem enviar dinheiro (efetuar transferência) para lojistas e entre usuários e consultar as transferências realizadas;
 
 - Lojistas só recebem transferências, não enviam dinheiro para ninguém;
 
@@ -139,3 +139,5 @@ Controlador criado para realizar a implementação da autenticação e autoriza�
 - .NET 8
 - ASP.NET Web API
 - Entity Framework
+- SQL Server
+- Padrão Repository
